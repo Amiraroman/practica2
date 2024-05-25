@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EJ4</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #181625;
+      color: #ffffff;
+    }
+    .form-control {
+      background-color: #000000;
+      color: #ffffff;
+    }
+    .btn-primary {
+      background-color: #0A5EFF !important;
+      border-color: #0A5EFF !important;
+    }
+    
+    .btn:hover {
+      background-color: #0A5EFF !important; 
+      border-color: #0A5EFF  !important;
+    }
+    .btn-primary:hover {
+      background-color: #0A5EFF !important; 
+      border-color:  #0A5EFF !important;
+    }
+    .btn-primary:active {
+      background-color: #0A5EFF !important; 
+      border-color:  #0A5EFF !important;
+    }
+
+
+    .figurita {
+      width: 50px;
+      height: 50px;
+      background-color: #181625;
+      box-shadow: 0 0 20px 10px rgba(63, 89, 218, 0.5);
+      position: absolute;
+      left: 0;
+    }
+
+    #carrera-container {
+      position: relative;
+      margin-top: 20px; 
+    }
+    .form-group-select {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 style="text-align: center;">Carrera</h1>
+    <div class="form-group">
+      <label for="numeroCorredores">Seleccione numero de corredores:</label>
+      <input type="number" class="form-control" id="numeroCorredores" min="1" value="2">
+    </div>
+    <div class="form-group form-group-select">
+      <label for="ganador">Seleccione el ganador:</label>
+      <select class="form-control" id="ganador">
+      </select>
+    </div>
+    
+    
+    <div id="carrera-container">
+      <div id="carrera""></div>
+    </div>
+    
+    <button id="iniciarCarrera" class="btn btn-primary">Iniciar Carrera</button>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $("#iniciarCarrera").click(function() {
+        var numeroCorredores = parseInt($("#numeroCorredores").val());
+        var ganadorIndex = parseInt($("#ganador").val());
+        iniciarCarrera(numeroCorredores, ganadorIndex, function(posiciones) {
+          mostrarGanador(posiciones, ganadorIndex);
+        });
+      });
+
+      function iniciarCarrera(numeroCorredores, ganadorIndex, callback) {
+        $("#carrera").empty(); 
+        var posiciones = [];
+        for (var i = 0; i < numeroCorredores; i++) {
+          var figurita = $("<div class='figurita'></div>");
+          $("#carrera").append(figurita);
+          figurita.animate({left: '100%'}, Math.random() * 5000, function() {
+            posiciones.push($(this));
+            if (posiciones.length === numeroCorredores) {
+              callback(posiciones);
+            }
+          });
+        }
+      }
+
+      function mostrarGanador(posiciones, ganadorIndex) {
+        posiciones.sort(function(a, b) {
+          return parseFloat(a.css("left")) - parseFloat(b.css("left"));
+        });
+        var ganador = posiciones[ganadorIndex];
+        alert("El ganador es el corredor en la posición " + (posiciones.indexOf(ganador) + 1));
+      }
+
+      $("#numeroCorredores").change(function() {
+        var numeroCorredores = parseInt($(this).val());
+        var options = "";
+        for (var i = 0; i < numeroCorredores; i++) {
+          options += "<option value='" + i + "'>Corredor " + (i + 1) + "</option>";
+        }
+        $("#ganador").html(options);
+      }).change(); 
+    });
+  </script>
+</body>
+</html>
